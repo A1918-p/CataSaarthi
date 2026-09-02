@@ -1,0 +1,27 @@
+# CataSaarthi AI - central configuration
+# Edit this file to change paths, seed, or model choices. Nothing should be hard-coded elsewhere.
+
+project:
+  name: "CataSaarthi AI"
+  task: "Binary screening - Normal vs Suspected Cataract (fundus images)"
+  seed: 42
+
+data:
+  # The ONLY machine-specific line. On a teammate PC, Kaggle, or Colab, change just this.
+  root: "D:/catasaarthi_data"
+  raw_subdir: "raw"
+  processed_subdir: "processed"
+  models_subdir: "models"
+  outputs_subdir: "outputs"
+
+split:
+  val_size: 0.15
+  test_size: 0.15
+  patient_level: true   # both eyes of a patient stay in the same split - prevents data leakage
+
+image:
+  size: 224             # model input resolution (square)
+
+model:
+  backbone: "resnet50"  # baseline; we will compare efficientnet_b0 and densenet121
+  pretrained: true
