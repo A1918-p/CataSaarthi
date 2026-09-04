@@ -22,7 +22,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 cfg = yaml.safe_load((ROOT / "configs" / "config.yaml").read_text(encoding="utf-8"))
 data_root = Path(cfg["data"]["root"])
-raw = data_root / cfg["data"]["raw_subdir"]
+raw = Path(cfg["data"]["raw_root"])
 processed = data_root / cfg["data"]["processed_subdir"]
 processed.mkdir(parents=True, exist_ok=True)
 

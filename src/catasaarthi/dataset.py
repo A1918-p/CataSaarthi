@@ -17,8 +17,7 @@ IMG_EXT = {".jpg", ".jpeg", ".png"}
 
 
 def build_image_index(cfg: dict) -> dict:
-    data_root = Path(cfg["data"]["root"])
-    originals = (data_root / cfg["data"]["raw_subdir"]
+    originals = (Path(cfg["data"]["raw_root"])
                  / cfg["data"]["originals_subdir"])
     index = {}
     for p in originals.rglob("*"):
