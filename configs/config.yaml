@@ -8,11 +8,13 @@ project:
 
 data:
   # The ONLY machine-specific line. On a teammate PC, Kaggle, or Colab, change just this.
+data:
   root: "D:/catasaarthi_data"
   raw_subdir: "raw"
   processed_subdir: "processed"
   models_subdir: "models"
   outputs_subdir: "outputs"
+  originals_subdir: "ODIR-5K"   # full-res originals live under raw/ODIR-5K (searched recursively)
 
 split:
   val_size: 0.15
