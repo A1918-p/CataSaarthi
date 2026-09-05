@@ -24,6 +24,7 @@ cfg = load_config()
 data_root = Path(cfg["data"]["root"])
 raw = Path(cfg["data"]["raw_root"])
 processed = data_root / cfg["data"]["processed_subdir"]
+processed.mkdir(parents=True, exist_ok=True)
 
 df = pd.read_csv(raw / "full_df.csv")
 
