@@ -16,15 +16,14 @@ Run:    python scripts/make_labels.py
 """
 from pathlib import Path
 import re
-import yaml
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
-cfg = yaml.safe_load((ROOT / "configs" / "config.yaml").read_text(encoding="utf-8"))
+from catasaarthi.config import load_config
+
+cfg = load_config()
 data_root = Path(cfg["data"]["root"])
 raw = Path(cfg["data"]["raw_root"])
 processed = data_root / cfg["data"]["processed_subdir"]
-processed.mkdir(parents=True, exist_ok=True)
 
 df = pd.read_csv(raw / "full_df.csv")
 

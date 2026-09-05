@@ -10,12 +10,12 @@ Output: <data_root>/processed/splits.csv   (per-eye rows + a 'split' column)
 Run:    python scripts/make_splits.py
 """
 from pathlib import Path
-import yaml
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-ROOT = Path(__file__).resolve().parents[1]
-cfg = yaml.safe_load((ROOT / "configs" / "config.yaml").read_text(encoding="utf-8"))
+from catasaarthi.config import load_config
+
+cfg = load_config()
 processed = Path(cfg["data"]["root"]) / cfg["data"]["processed_subdir"]
 seed      = int(cfg["project"]["seed"])
 val_size  = float(cfg["split"]["val_size"])
