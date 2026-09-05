@@ -74,7 +74,10 @@ def main():
     out_dir = Path(cfg["data"]["root"]) / cfg["data"]["outputs_subdir"]
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    ckpt = torch.load(models_dir / "best.pt", map_location=device)
+     # weights_only=False: this is OUR checkpoint saved by train.py in the same
+    # pipeline (trusted). It stores a metrics dict with numpy scalars, which the
+    # torch>=2.6 strict loader (weights_only=True) refuses to unpickle.
+    ckpt = torch.load(models_dir / "best.pt", map_location=device, weights_only=False)
     backbone = ckpt.get("backbone", cfg["model"]["backbone"])
     model = build_model(backbone).to(device)
     model.load_state_dict(ckpt["model_state"])
