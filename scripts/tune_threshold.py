@@ -65,6 +65,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--target-recall", type=float, default=0.90,
                     help="minimum cataract sensitivity the chosen threshold must meet")
+    ap.add_argument("--min-threshold", type=float, default=0.0,
+                    help="don't choose a threshold below this (avoids over-tuning to a "
+                         "single noisy validation eye at very low cutoffs)")
     ap.add_argument("--device", default=None)
     args = ap.parse_args()
 
@@ -74,7 +77,7 @@ def main():
     out_dir = Path(cfg["data"]["root"]) / cfg["data"]["outputs_subdir"]
     out_dir.mkdir(parents=True, exist_ok=True)
 
-     # weights_only=False: this is OUR checkpoint saved by train.py in the same
+    # weights_only=False: this is OUR checkpoint saved by train.py in the same
     # pipeline (trusted). It stores a metrics dict with numpy scalars, which the
     # torch>=2.6 strict loader (weights_only=True) refuses to unpickle.
     ckpt = torch.load(models_dir / "best.pt", map_location=device, weights_only=False)
@@ -97,11 +100,12 @@ def main():
         print(f"{r['threshold']:.2f}  {r['recall']:.3f}  {r['specificity']:.3f}  "
               f"{r['precision']:.3f}  {r['tp']:3d}{r['fp']:3d}{r['fn']:3d}{r['tn']:4d}")
 
-    # choose the HIGHEST threshold that still meets target recall (best specificity
-    # among options that hit the sensitivity floor); fall back to most-sensitive.
-    ok = [r for r in rows if r["recall"] >= args.target_recall]
+    # meet the sensitivity floor AND respect the minimum-threshold guard, then take
+    # the HIGHEST such threshold (best specificity for the required sensitivity).
+    ok = [r for r in rows
+          if r["recall"] >= args.target_recall and r["threshold"] >= args.min_threshold]
     chosen = max(ok, key=lambda r: r["threshold"]) if ok else max(rows, key=lambda r: r["recall"])
-
+    
     import csv
     with open(out_dir / "threshold_sweep.csv", "w", newline="") as f:
         wr = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
